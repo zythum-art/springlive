@@ -26,4 +26,15 @@ public class HomeController {
         user.setEmail("info@nvsoftware.net");
         return user;
     }
+
+    @GetMapping("/userparams")
+    public User userByRequestParams(@RequestParam String id,
+                                    @RequestParam("username") String name,
+                                    @RequestParam(required = false, defaultValue = "info@nv.net")String email){
+        User user = new User();
+        user.setId(id);
+        user.setName(name);
+        user.setEmail(email);
+        return user;
+    }
 }
