@@ -16,6 +16,31 @@ spring:
   config:
     import: configserver:http://localhost:8051
 
+  cloud:
+    compatibility-verifier:
+      enabled: false
+
+
+  sleuth:
+    sampler:
+      probability: 1.0
+
+zipkin:
+  base-url: http://localhost:9411
+
+management:
+  tracing:
+    enabled: true
+  metrics:
+    export:
+      simple:
+        enabled: true
+      prometheus:
+        enabled: true
+
+
+
+
 #eureka:
 #  instance:
 #    prefer-ip-address: true
