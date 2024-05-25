@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 
 @Entity
-@Table(name = "Payment_TB")
+@Table(name = "payment_tB")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +17,7 @@ import java.time.Instant;
 public class PaymentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private long orderId;
     private String paymentMode;
     private long totalAmount;
