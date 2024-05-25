@@ -5,6 +5,7 @@ import net.nvsoftware.OrderServicecason.client.PaymentServiceFeignClient;
 import net.nvsoftware.OrderServicecason.client.ProductServiceFeignClient;
 import net.nvsoftware.OrderServicecason.entity.OrderEntity;
 import net.nvsoftware.OrderServicecason.model.OrderRequest;
+import net.nvsoftware.OrderServicecason.model.OrderResponse;
 import net.nvsoftware.OrderServicecason.model.PaymentRequest;
 import net.nvsoftware.OrderServicecason.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,5 +62,20 @@ public class OrderServiceImpl implements OrderService {
         // call PaymentService to charge, if Success, mark order PAID, else CANCELLED
         log.info("End: OrderService placeOrder Done with orderId: " + orderEntity.getId());
         return orderEntity.getId();
+    }
+
+    @Override
+    public OrderResponse getOrderDetailById(long orderId) {
+        log.info("Start: OrderService getOrderDetailById");
+        OrderEntity orderEntity = orderRepository.findById(orderId)
+                        .orElseThrow(() -> new RuntimeException("OrderService getOrderDetailById: Order Not Found with id: " + orderId));
+        OrderResponse orderResponse = OrderResponse.builder()
+                .orderId(orderEntity.getId())
+                .orderStatus(orderEntity.getOrderStatus())
+                .orderDate(orderEntity.getOrderDate())
+                .totalAmount(orderEntity.getTotalAmount())
+                .build();
+        log.info("End: OrderService getOrderDetailById");
+        return orderResponse;
     }
 }
