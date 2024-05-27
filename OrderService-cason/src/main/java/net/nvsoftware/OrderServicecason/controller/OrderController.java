@@ -4,7 +4,6 @@ import lombok.extern.log4j.Log4j2;
 import net.nvsoftware.OrderServicecason.model.OrderRequest;
 import net.nvsoftware.OrderServicecason.model.OrderResponse;
 import net.nvsoftware.OrderServicecason.service.OrderService;
-import org.hibernate.query.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
