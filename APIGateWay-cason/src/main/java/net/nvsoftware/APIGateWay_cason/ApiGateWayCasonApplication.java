@@ -17,4 +17,5 @@ public class ApiGatewayCasonApplication {
 	KeyResolver userIdSolver() {
 		return exchange -> Mono.just("userId");
 	}
+
 }

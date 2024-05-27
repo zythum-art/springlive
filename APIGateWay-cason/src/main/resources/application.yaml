@@ -48,25 +48,12 @@ spring:
               args:
                 redis-rate-limiter.replenishRate: 1
                 redis-rate-limiter.burstCapacity: 1
-#
-#    compatibility-verifier:
-#      enabled: false
-#
-#
-#  sleuth:
-#    sampler:
-#      probability: 1.0
-#
-#zipkin:
-#  base-url: http://localhost:9411
-#
-#management:
-#  tracing:
-#    enabled: true
-#  metrics:
-#    export:
-#      simple:
-#        enabled: true
-#      prometheus:
-#        enabled: true
+okta:
+  oauth2:
+    issuer: https://dev-26031882.okta.com/oauth2/default
+    audience: api://default
+    client-id: 0oahc3egdbqa1oqI65d7
+    client-secret: jxYs_f9A0wI3FJGBIctf067grFnDcnrN4fbhswnw-DbA_gejAuLAwSpgVZP5kjqK
+    scopes: openid, profile, email, offline_access, internal
+
 
