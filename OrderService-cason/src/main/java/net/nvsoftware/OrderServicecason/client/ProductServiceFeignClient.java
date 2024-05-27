@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name="PRODUCT-SERVICE/product")
-@CircuitBreaker(name = "feignCall", fallbackMethod = "feignCallPaymentFallBack")
+//@CircuitBreaker(name = "feignCall", fallbackMethod = "feignCallPaymentFallBack")
 public interface ProductServiceFeignClient {
     @PutMapping("/reduceQuantity")
     public ResponseEntity<Void> reduceQuantity(@RequestParam long id, @RequestParam long quantity);

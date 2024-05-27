@@ -23,8 +23,8 @@ public class OrderServiceImpl implements OrderService {
     private ProductServiceFeignClient productServiceFeignClient;
     @Autowired
     private PaymentServiceFeignClient paymentServiceFeignClient;
-
-    private RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
     @Override
     public long placeOrder(OrderRequest orderRequest) {// TODO: Transaction
         log.info("Start: OrderService placeOrder");
