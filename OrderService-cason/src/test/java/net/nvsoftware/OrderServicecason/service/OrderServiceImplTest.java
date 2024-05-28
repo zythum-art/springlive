@@ -6,6 +6,7 @@ import net.nvsoftware.OrderServicecason.client.ProductServiceFeignClient;
 import net.nvsoftware.OrderServicecason.entity.OrderEntity;
 import net.nvsoftware.OrderServicecason.model.OrderResponse;
 import net.nvsoftware.OrderServicecason.repository.OrderRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -47,12 +48,24 @@ class OrderServiceImplTest {
                 "http://PAYMENT-SERVICE/payment/" +orderEntity.getId(),
                 OrderResponse.PaymentResponse.class
         )).thenReturn(getMockPaymentResponse());
+
         //Actual Call
-        orderService.getOrderDetailById(1);
+        OrderResponse orderResponse = orderService.getOrderDetailById(1);
 
         //Verify Call
 
+        Mockito.verify(orderRepository, Mockito.times(1)).findById(Mockito.anyLong());
+        Mockito.verify(restTemplate, Mockito.times(1)).getForObject(
+                "http://PRODUCT-SERVICE/product/" + orderEntity.getProductId(),
+                OrderResponse.ProductResponse.class
+        );
+        Mockito.verify(restTemplate, Mockito.times(1)).getForObject(
+                "http://PAYMENT-SERVICE/payment/" +orderEntity.getId(),
+                OrderResponse.PaymentResponse.class
+        );
         //Assert Result
+        Assertions.assertNotNull(orderResponse);
+        Assertions.assertEquals(orderEntity.getId(), orderResponse.getOrderId());
     }
 
     private OrderResponse.PaymentResponse getMockPaymentResponse() {
