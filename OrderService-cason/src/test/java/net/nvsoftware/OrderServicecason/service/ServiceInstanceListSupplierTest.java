@@ -22,7 +22,7 @@ public class ServiceInstanceListSupplierTest implements ServiceInstanceListSuppl
                 "PAYMENT-SERVICE",
                 "PAYMENT-SERVICE",
                 "localhost",
-                8052,
+                8053,
                 false
         ));
 
@@ -30,7 +30,7 @@ public class ServiceInstanceListSupplierTest implements ServiceInstanceListSuppl
                 "PRODUCT-SERVICE",
                 "PRODUCT-SERVICE",
                 "localhost",
-                8052,
+                8053,
                 false
         ));
 
