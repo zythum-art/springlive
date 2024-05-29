@@ -4,7 +4,9 @@ package net.nvsoftware.OrderServicecason.service;
 import net.nvsoftware.OrderServicecason.client.PaymentServiceFeignClient;
 import net.nvsoftware.OrderServicecason.client.ProductServiceFeignClient;
 import net.nvsoftware.OrderServicecason.entity.OrderEntity;
+import net.nvsoftware.OrderServicecason.model.OrderRequest;
 import net.nvsoftware.OrderServicecason.model.OrderResponse;
+import net.nvsoftware.OrderServicecason.model.PaymentRequest;
 import net.nvsoftware.OrderServicecason.repository.OrderRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
@@ -80,6 +84,53 @@ class OrderServiceImplTest {
     }
 
 
+    @Test
+    @DisplayName("PlaceOrder Success")
+    void testWhenPlaceOrderSuccess() {
+        OrderEntity orderEntity = getMockOrderEntity();
+        OrderRequest orderRequest = getMockOrderRequest();
+
+        Mockito.when(orderRepository.save(Mockito.any(OrderEntity.class)))
+                .thenReturn(orderEntity);
+        Mockito.when(productServiceFeignClient.reduceQuantity(Mockito.anyLong(), Mockito.anyLong()))
+                .thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        Mockito.when(paymentServiceFeignClient.doPayment(Mockito.any(PaymentRequest.class)))
+                .thenReturn(new ResponseEntity<Long>(1L, HttpStatus.OK));
+
+        long orderId = orderService.placeOrder(orderRequest);
+
+        Mockito.verify(orderRepository, Mockito.times(2)).save(Mockito.any());
+        Mockito.verify(productServiceFeignClient, Mockito.times(1)).reduceQuantity(Mockito.anyLong(), Mockito.anyLong());
+        Mockito.verify(paymentServiceFeignClient, Mockito.times(1)).doPayment(Mockito.any(PaymentRequest.class));
+
+        Assertions.assertEquals(orderEntity.getId(), orderId);
+    }
+
+
+    @Test
+    @DisplayName("PlaceOrder Failed")
+    void testWhenPlaceOrderPaymentFailed() {
+        OrderEntity orderEntity = getMockOrderEntity();
+        OrderRequest orderRequest = getMockOrderRequest();
+
+        Mockito.when(orderRepository.save(Mockito.any(OrderEntity.class)))
+                .thenReturn(orderEntity);
+        Mockito.when(productServiceFeignClient.reduceQuantity(Mockito.anyLong(), Mockito.anyLong()))
+                .thenReturn(new ResponseEntity<Void>(HttpStatus.OK));
+        Mockito.when(paymentServiceFeignClient.doPayment(Mockito.any(PaymentRequest.class)))
+                .thenThrow(new RuntimeException("Payment Failed"));
+
+        long orderId = orderService.placeOrder(orderRequest);
+
+        Mockito.verify(orderRepository, Mockito.times(2)).save(Mockito.any(OrderEntity.class));
+        Mockito.verify(productServiceFeignClient, Mockito.times(1)).reduceQuantity(Mockito.anyLong(), Mockito.anyLong());
+        Mockito.verify(paymentServiceFeignClient, Mockito.times(1)).doPayment(Mockito.any(PaymentRequest.class));
+
+        Assertions.assertEquals(orderEntity.getId(), orderId);
+    }
+
+
+
 
     private OrderResponse.PaymentResponse getMockPaymentResponse() {
         return OrderResponse.PaymentResponse.builder()
@@ -110,6 +161,15 @@ class OrderServiceImplTest {
                 .totalAmount(2999)
                 .orderDate(Instant.now())
                 .orderStatus("PLACED")
+                .build();
+    }
+
+    private OrderRequest getMockOrderRequest() {
+        return OrderRequest.builder()
+                .productId(1)
+                .quantity(1)
+                .totalAmount(1299)
+                .paymentMode("CASH")
                 .build();
     }
 }
